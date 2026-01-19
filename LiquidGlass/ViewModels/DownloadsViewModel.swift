@@ -3,7 +3,7 @@ import Foundation
 // MARK: - Downloads View Model
 
 @MainActor
-@MainActor
+
 class DownloadsManager: ObservableObject {
     static let shared = DownloadsManager()
     
