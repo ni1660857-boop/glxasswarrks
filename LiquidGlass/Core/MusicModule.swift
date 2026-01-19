@@ -553,7 +553,13 @@ public actor JavaScriptModule: MusicModule, ObservableObject {
                 let qualityStr = jsValue?.objectForKeyedSubscript("quality")?.toString() ?? "NORMAL"
                 let quality = AudioQuality(rawValue: qualityStr) ?? .normal
                 
-                return StreamInfo(url: url, quality: quality, format: .mp3) // Default to mp3 for now
+                return StreamInfo(
+                    url: url,
+                    codec: .mp3,
+                    container: .unknown,
+                    quality: quality,
+                    trackId: trackId
+                )
             }
         }
     }
