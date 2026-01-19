@@ -347,3 +347,39 @@ struct GlassLoadingIndicator: View {
             }
     }
 }
+
+// MARK: - Glass Theme
+public enum GlassTheme {
+    public static let black = Color(red: 0, green: 0, blue: 0) // True OLED Black
+    public static let darkGray = Color(red: 0.1, green: 0.1, blue: 0.1)
+    public static let cyan = Color(red: 0.0, green: 1.0, blue: 1.0)
+    public static let pink = Color(red: 1.0, green: 0.0, blue: 0.5)
+    
+    // Semantic aliases
+    public static let background = black
+    public static let textPrimary = Color.white
+    
+    // Convenience for standard glass colors used in components
+    public static let white = Color.white
+    public static let gray = Color.gray
+    
+    public static func font(size: CGFloat, weight: Font.Weight = .regular) -> Font {
+        .system(size: size, weight: weight, design: .rounded)
+    }
+}
+
+// MARK: - View Modifiers
+struct OLEDBackground: ViewModifier {
+    func body(content: Content) -> some View {
+        ZStack {
+            GlassTheme.black.ignoresSafeArea()
+            content
+        }
+    }
+}
+
+extension View {
+    func oledBackground() -> some View {
+        modifier(OLEDBackground())
+    }
+}

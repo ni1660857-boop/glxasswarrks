@@ -55,8 +55,25 @@ public final class HiFiAPI: ObservableObject {
         if tracks.isEmpty && albums.isEmpty && artists.isEmpty {
              // If no results from modules, try Spotify Metadata Service as fallback/augmentation
              // (User mentioned "don't see spotify metadata anywhere")
-             let spotifyTracks = await SpotifyMetadataService.shared.search(query: query)
-             tracks.append(contentsOf: spotifyTracks)
+             do {
+                 let spotifyResult = try await SpotifyMetadataService.shared.search(query: query)
+                 if let spotifyTracks = spotifyResult.tracks?.items {
+                     let mappedTracks = spotifyTracks.map { sTrack in
+                         Track(
+                             id: "spotify:\(sTrack.id)",
+                             title: sTrack.name,
+                             artist: sTrack.artists.first?.name ?? "Unknown",
+                             album: sTrack.album.name,
+                             artworkURL: URL(string: sTrack.album.images.first?.url ?? ""),
+                             duration: 0,
+                             moduleId: "spotify-metadata"
+                         )
+                     }
+                     tracks.append(contentsOf: mappedTracks)
+                 }
+             } catch {
+                 print("Spotify search failed: \(error)")
+             }
         }
         
         return SearchResults(tracks: tracks, albums: albums, artists: artists)
