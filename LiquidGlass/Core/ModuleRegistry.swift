@@ -94,7 +94,7 @@ public final class ModuleRegistry: ObservableObject {
     public func registerDynamicModule(code: String) async throws {
         // Attempt to create it first to validate
         let module = try JavaScriptModule(sourceCode: code)
-        let id = await module.id
+        let id = module.id
         
         // Save to persistent storage
         var savedModules = userDefaults.dictionary(forKey: "dynamic.modules") as? [String: String] ?? [:]

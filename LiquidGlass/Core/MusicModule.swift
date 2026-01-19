@@ -380,10 +380,10 @@ public actor BaseModule {
 
 /// A module that runs dynamic JavaScript code in a sandboxed environment
 public actor JavaScriptModule: MusicModule, ObservableObject {
-    public let id: String
-    public let name: String
-    public let version: String
-    public let description: String
+    nonisolated public let id: String
+    nonisolated public let name: String
+    nonisolated public let version: String
+    nonisolated public let description: String
     
     // JS Properties
     private let context: JSContext
