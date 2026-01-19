@@ -5,29 +5,45 @@ struct ContentView: View {
     @State private var selectedTab = 0
     @State private var showNowPlaying = false
     
+    // Inject dependencies to ensure loading
+    @StateObject private var hifiAPI = HiFiAPI.shared
+    
     var body: some View {
         ZStack(alignment: .bottom) {
+            // Global Background
+            GlassTheme.black.ignoresSafeArea()
+            
             // Tab content
             TabView(selection: $selectedTab) {
                 SearchView()
                     .tag(0)
+                    .oledBackground()
                 
                 LibraryView()
                     .tag(1)
+                    .oledBackground()
                 
                 DownloadsView()
                     .tag(2)
+                    .oledBackground()
                 
                 ModuleManagerView()
                     .tag(3)
+                    .oledBackground()
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
+            .ignoresSafeArea() // Allow content to flow under tab bar
             
+            
+            // UI Overlay
             VStack(spacing: 0) {
+                Spacer()
+                
                 // Mini player
                 if player.currentTrack != nil {
                     MiniPlayerView(isExpanded: $showNowPlaying)
-                        .padding(.bottom, 8)
+                        .padding(.horizontal)
+                        .padding(.bottom, 12)
                 }
                 
                 // Custom tab bar
@@ -38,6 +54,11 @@ struct ContentView: View {
         .fullScreenCover(isPresented: $showNowPlaying) {
             NowPlayingView()
                 .environmentObject(player)
+                .oledBackground()
+        }
+        .task {
+            // Ensure modules are loaded on app start
+            await hifiAPI.registry.loadModules()
         }
     }
     
@@ -49,15 +70,19 @@ struct ContentView: View {
                 label: "Search",
                 isSelected: selectedTab == 0
             ) {
-                selectedTab = 0
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                    selectedTab = 0
+                }
             }
             
             TabBarButton(
-                icon: "square.stack",
+                icon: "square.stack.3d.up",
                 label: "Library",
                 isSelected: selectedTab == 1
             ) {
-                selectedTab = 1
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                    selectedTab = 1
+                }
             }
             
             TabBarButton(
@@ -65,7 +90,9 @@ struct ContentView: View {
                 label: "Downloads",
                 isSelected: selectedTab == 2
             ) {
-                selectedTab = 2
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                    selectedTab = 2
+                }
             }
             
             TabBarButton(
@@ -73,31 +100,25 @@ struct ContentView: View {
                 label: "Modules",
                 isSelected: selectedTab == 3
             ) {
-                selectedTab = 3
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                    selectedTab = 3
+                }
             }
         }
-        .padding(.horizontal, 8)
-        .padding(.top, 8)
-        .padding(.bottom, 24)
+        .padding(.top, 16)
+        .padding(.bottom, 32)
         .background(
             Rectangle()
                 .fill(.ultraThinMaterial)
-                .overlay(
-                    Rectangle()
-                        .fill(Color.surfacePrimary.opacity(0.8))
-                )
-                .overlay(
-                    Rectangle()
-                        .fill(
-                            LinearGradient(
-                                colors: [Color.white.opacity(0.1), Color.clear],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
-                        )
-                        .frame(height: 1),
-                    alignment: .top
-                )
+                .environment(\.colorScheme, .dark)
+                .mask {
+                    VStack(spacing: 0) {
+                        LinearGradient(colors: [.black.opacity(0), .black], startPoint: .top, endPoint: .bottom)
+                            .frame(height: 20)
+                        Rectangle()
+                    }
+                }
+                .ignoresSafeArea()
         )
     }
 }
@@ -111,23 +132,25 @@ struct TabBarButton: View {
     
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 4) {
+            VStack(spacing: 6) {
                 ZStack {
                     if isSelected {
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.accentGlow.opacity(0.15))
-                            .frame(width: 56, height: 32)
+                        GlassTheme.cyan
+                            .frame(width: 40, height: 4)
+                            .blur(radius: 4)
+                            .offset(y: -20)
+                            .opacity(0.8)
                     }
                     
                     Image(systemName: isSelected ? icon + ".fill" : icon)
-                        .font(.system(size: 20))
-                        .foregroundStyle(isSelected ? Color.accentGlow : Color.textSecondary)
-                        .frame(width: 56, height: 32)
+                        .font(.system(size: 22, weight: isSelected ? .bold : .medium))
+                        .foregroundStyle(isSelected ? .white : GlassTheme.gray)
+                        .scaleEffect(isSelected ? 1.1 : 1.0)
                 }
                 
                 Text(label)
-                    .font(.system(size: 10, weight: .medium))
-                    .foregroundStyle(isSelected ? Color.accentGlow : Color.textSecondary)
+                    .font(GlassTheme.font(size: 10, weight: .medium))
+                    .foregroundStyle(isSelected ? .white : GlassTheme.gray)
             }
             .frame(maxWidth: .infinity)
         }

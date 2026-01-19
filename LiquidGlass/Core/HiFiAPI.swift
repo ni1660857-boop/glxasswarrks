@@ -35,10 +35,31 @@ public final class HiFiAPI: ObservableObject {
     public var registry: ModuleRegistry { moduleRegistry }
     
     public func search(query: String, limit: Int = 25) async throws -> SearchResults {
-        guard let module = moduleRegistry.primaryModule else {
-            throw HiFiError.noModulesAvailable
+        if registry.modules.isEmpty {
+            await registry.loadModules()
         }
-        return try await module.searchTracks(query: query, limit: limit)
+        
+        let allResults = await moduleRegistry.searchAll(query: query, limit: limit)
+        
+        // Aggregate results
+        var tracks: [Track] = []
+        var albums: [Album] = []
+        var artists: [Artist] = []
+        
+        for (_, results) in allResults {
+            tracks.append(contentsOf: results.tracks)
+            albums.append(contentsOf: results.albums)
+            artists.append(contentsOf: results.artists)
+        }
+        
+        if tracks.isEmpty && albums.isEmpty && artists.isEmpty {
+             // If no results from modules, try Spotify Metadata Service as fallback/augmentation
+             // (User mentioned "don't see spotify metadata anywhere")
+             let spotifyTracks = await SpotifyMetadataService.shared.search(query: query)
+             tracks.append(contentsOf: spotifyTracks)
+        }
+        
+        return SearchResults(tracks: tracks, albums: albums, artists: artists)
     }
     
     public func resolveStream(track: Track, quality: AudioQuality? = nil) async throws -> StreamInfo {

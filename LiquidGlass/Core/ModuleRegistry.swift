@@ -81,8 +81,56 @@ public final class ModuleRegistry: ObservableObject {
             
             // Load remote modules (if approved)
             await loadRemoteModules()
+            
+            // Load dynamic JS modules
+            await loadDynamicModules()
         
         isLoading = false
+    }
+    
+    // MARK: - Dynamic Modules
+    
+    /// Registers a new dynamic module from source code
+    public func registerDynamicModule(code: String) async throws {
+        // Attempt to create it first to validate
+        let module = try JavaScriptModule(sourceCode: code)
+        let id = await module.id
+        
+        // Save to persistent storage
+        var savedModules = userDefaults.dictionary(forKey: "dynamic.modules") as? [String: String] ?? [:]
+        savedModules[id] = code
+        userDefaults.set(savedModules, forKey: "dynamic.modules")
+        
+        // Register in memory
+        modules[id] = module
+        await enableModule(id: id)
+    }
+    
+    /// Deletes a dynamic module
+    public func deleteDynamicModule(id: String) async {
+        await disableModule(id: id)
+        modules.removeValue(forKey: id)
+        
+        var savedModules = userDefaults.dictionary(forKey: "dynamic.modules") as? [String: String] ?? [:]
+        savedModules.removeValue(forKey: id)
+        userDefaults.set(savedModules, forKey: "dynamic.modules")
+    }
+    
+    private func loadDynamicModules() async {
+        let savedModules = userDefaults.dictionary(forKey: "dynamic.modules") as? [String: String] ?? [:]
+        for (id, code) in savedModules {
+            do {
+                let module = try JavaScriptModule(sourceCode: code)
+                modules[id] = module
+                
+                // Enable if it was enabled
+                if userDefaults.bool(forKey: "module.enabled.\(id)") {
+                    await enableModule(id: id)
+                }
+            } catch {
+                print("Failed to load dynamic module \(id): \(error)")
+            }
+        }
     }
     
     /// Load remote module manifests

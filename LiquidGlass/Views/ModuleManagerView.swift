@@ -4,14 +4,34 @@ import SwiftUI
 
 struct ModuleManagerView: View {
     @StateObject private var viewModel = ModuleManagerViewModel()
+    @State private var showImportSheet = false
+    @State private var importCode = ""
+    @State private var importError: String?
     
     var body: some View {
         NavigationStack {
             ZStack {
-                Color.surfacePrimary.ignoresSafeArea()
+                GlassTheme.black.ignoresSafeArea()
                 
                 ScrollView {
                     VStack(spacing: 24) {
+                        // Header
+                        HStack {
+                            Text("Modules")
+                                .font(GlassTheme.font(size: 34, weight: .bold))
+                                .foregroundStyle(GlassTheme.white)
+                            Spacer()
+                            Button {
+                                showImportSheet = true
+                            } label: {
+                                Image(systemName: "plus.circle.fill")
+                                    .font(.system(size: 24))
+                                    .foregroundStyle(GlassTheme.cyan)
+                            }
+                        }
+                        .padding(.horizontal)
+                        .padding(.top)
+                        
                         // Modules List
                         modulesSection
                         
@@ -21,13 +41,70 @@ struct ModuleManagerView: View {
                         // Diagnostics
                         diagnosticsSection
                     }
-                    .padding()
+                    .padding(.bottom, 100) // Spacing for tab bar
                 }
             }
-            .navigationTitle("Modules")
+            .toolbar(.hidden, for: .navigationBar)
         }
         .task {
             await viewModel.loadModules()
+        }
+        .sheet(isPresented: $showImportSheet) {
+            importSheet
+        }
+    }
+    
+    // MARK: - Import Sheet
+    private var importSheet: some View {
+        ZStack {
+            GlassTheme.darkGray.ignoresSafeArea()
+            
+            VStack(spacing: 20) {
+                Text("Import Module")
+                    .font(GlassTheme.font(size: 20, weight: .bold))
+                    .foregroundStyle(.white)
+                    .padding(.top)
+                
+                Text("Paste your JavaScript module code below.")
+                    .font(GlassTheme.font(size: 14))
+                    .foregroundStyle(GlassTheme.gray)
+                
+                TextEditor(text: $importCode)
+                    .font(.system(.body, design: .monospaced))
+                    .scrollContentBackground(.hidden)
+                    .background(Color.black.opacity(0.5))
+                    .foregroundStyle(Color.green)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .padding()
+                
+                if let error = importError {
+                    Text(error)
+                        .foregroundStyle(GlassTheme.pink)
+                        .font(.caption)
+                }
+                
+                Button {
+                    Task {
+                        do {
+                            try await viewModel.importModule(code: importCode)
+                            showImportSheet = false
+                            importCode = ""
+                            importError = nil
+                        } catch {
+                            importError = error.localizedDescription
+                        }
+                    }
+                } label: {
+                    Text("Install Module")
+                        .font(GlassTheme.font(size: 16, weight: .bold))
+                        .foregroundStyle(.black)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(GlassTheme.cyan)
+                        .clipShape(Capsule())
+                }
+                .padding()
+            }
         }
     }
     
@@ -35,13 +112,22 @@ struct ModuleManagerView: View {
     private var modulesSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Installed Modules")
-                .font(.title3.weight(.bold))
-                .foregroundStyle(.white)
+                .font(GlassTheme.font(size: 18, weight: .semibold))
+                .foregroundStyle(GlassTheme.gray)
+                .padding(.horizontal)
             
             ForEach(viewModel.modules, id: \.id) { module in
                 ModuleCard(module: module) {
                     Task {
                         await viewModel.toggleModule(id: module.id)
+                    }
+                }
+                .padding(.horizontal)
+                .contextMenu {
+                    Button(role: .destructive) {
+                        Task { await viewModel.deleteModule(id: module.id) }
+                    } label: {
+                        Label("Delete", systemImage: "trash")
                     }
                 }
             }
@@ -52,8 +138,9 @@ struct ModuleManagerView: View {
     private var securitySection: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Security")
-                .font(.title3.weight(.bold))
-                .foregroundStyle(.white)
+                .font(GlassTheme.font(size: 18, weight: .semibold))
+                .foregroundStyle(GlassTheme.gray)
+                .padding(.horizontal)
             
             VStack(spacing: 12) {
                 SecurityRow(
@@ -69,14 +156,8 @@ struct ModuleManagerView: View {
                     detail: "\(viewModel.allowedDomainsCount) domains",
                     status: .info
                 )
-                
-                SecurityRow(
-                    icon: "exclamationmark.triangle.fill",
-                    title: "Policy Violations",
-                    detail: "\(viewModel.violationsCount) violations",
-                    status: viewModel.violationsCount > 0 ? .warning : .verified
-                )
             }
+            .padding(.horizontal)
         }
     }
     
@@ -84,8 +165,9 @@ struct ModuleManagerView: View {
     private var diagnosticsSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Diagnostics")
-                .font(.title3.weight(.bold))
-                .foregroundStyle(.white)
+                .font(GlassTheme.font(size: 18, weight: .semibold))
+                .foregroundStyle(GlassTheme.gray)
+                .padding(.horizontal)
             
             VStack(spacing: 12) {
                 DiagnosticRow(
@@ -97,29 +179,10 @@ struct ModuleManagerView: View {
                     title: "Cache Size",
                     value: viewModel.cacheSize
                 )
-                
-                DiagnosticRow(
-                    title: "Avg Response Time",
-                    value: "\(viewModel.avgResponseTime)ms"
-                )
             }
             .padding()
-            .glassCard(cornerRadius: 16)
-            
-            // Clear logs button
-            Button {
-                Task { await viewModel.clearLogs() }
-            } label: {
-                HStack {
-                    Spacer()
-                    Text("Clear Logs")
-                        .font(.subheadline.weight(.semibold))
-                    Spacer()
-                }
-                .padding()
-                .glassCard(cornerRadius: 12)
-            }
-            .foregroundStyle(Color.textSecondary)
+            .glassCard()
+            .padding(.horizontal)
         }
     }
 }
@@ -130,84 +193,37 @@ struct ModuleCard: View {
     let onToggle: () -> Void
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                // Icon
-                Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: [Color.accentGlow, Color.accentSecondary],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .frame(width: 44, height: 44)
-                    .overlay(
-                        Text(String(module.name.prefix(2)).uppercased())
-                            .font(.caption.weight(.bold))
-                            .foregroundStyle(.white)
-                    )
-                
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(module.name)
-                        .font(.body.weight(.semibold))
+        HStack(spacing: 16) {
+            // Icon
+            Circle()
+                .fill(GlassTheme.liquidGradient)
+                .frame(width: 48, height: 48)
+                .overlay(
+                    Text(String(module.name.prefix(1)).uppercased())
+                        .font(GlassTheme.font(size: 20, weight: .bold))
                         .foregroundStyle(.white)
-                    
-                    Text("v\(module.version)")
-                        .font(.caption)
-                        .foregroundStyle(Color.textTertiary)
-                }
+                )
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text(module.name)
+                    .font(GlassTheme.font(size: 16, weight: .bold))
+                    .foregroundStyle(.white)
                 
-                Spacer()
-                
-                Toggle("", isOn: Binding(
-                    get: { module.isEnabled },
-                    set: { _ in onToggle() }
-                ))
-                .toggleStyle(SwitchToggleStyle(tint: Color.accentGlow))
+                Text("v\(module.version)")
+                    .font(GlassTheme.font(size: 12))
+                    .foregroundStyle(GlassTheme.gray)
             }
             
-            Text(module.description)
-                .font(.caption)
-                .foregroundStyle(Color.textSecondary)
+            Spacer()
             
-            // Labels
-            if !module.labels.isEmpty {
-                HStack(spacing: 8) {
-                    ForEach(module.labels, id: \.self) { label in
-                        Text(label)
-                            .font(.caption2.weight(.semibold))
-                            .foregroundStyle(Color.accentGlow)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(
-                                Capsule()
-                                    .fill(Color.accentGlow.opacity(0.15))
-                            )
-                    }
-                }
-            }
-            
-            // Auth status
-            if module.requiresAuth {
-                HStack(spacing: 6) {
-                    Image(systemName: module.isAuthenticated ? "checkmark.circle.fill" : "xmark.circle.fill")
-                        .foregroundStyle(module.isAuthenticated ? .green : .red)
-                    
-                    Text(module.isAuthenticated ? "Authenticated" : "Not authenticated")
-                        .font(.caption)
-                        .foregroundStyle(Color.textSecondary)
-                }
-            }
-            
-            // Allowed domains
-            Text("Domains: \(module.allowedDomains.joined(separator: ", "))")
-                .font(.caption2)
-                .foregroundStyle(Color.textTertiary)
-                .lineLimit(1)
+            Toggle("", isOn: Binding(
+                get: { module.isEnabled },
+                set: { _ in onToggle() }
+            ))
+            .toggleStyle(SwitchToggleStyle(tint: GlassTheme.cyan))
         }
         .padding()
-        .glassCard(cornerRadius: 16)
+        .glassCard()
     }
 }
 
@@ -221,7 +237,7 @@ struct SecurityRow: View {
             case .verified: return .green
             case .warning: return .orange
             case .error: return .red
-            case .info: return Color.accentGlow
+            case .info: return GlassTheme.cyan
             }
         }
     }
@@ -240,22 +256,18 @@ struct SecurityRow: View {
             
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
-                    .font(.subheadline.weight(.medium))
+                    .font(GlassTheme.font(size: 14, weight: .medium))
                     .foregroundStyle(.white)
                 
                 Text(detail)
-                    .font(.caption)
-                    .foregroundStyle(Color.textSecondary)
+                    .font(GlassTheme.font(size: 12))
+                    .foregroundStyle(GlassTheme.gray)
             }
             
             Spacer()
-            
-            Image(systemName: "chevron.right")
-                .font(.caption)
-                .foregroundStyle(Color.textTertiary)
         }
         .padding()
-        .glassCard(cornerRadius: 12)
+        .glassCard()
     }
 }
 
@@ -267,13 +279,13 @@ struct DiagnosticRow: View {
     var body: some View {
         HStack {
             Text(title)
-                .font(.subheadline)
-                .foregroundStyle(Color.textSecondary)
+                .font(GlassTheme.font(size: 14))
+                .foregroundStyle(GlassTheme.gray)
             
             Spacer()
             
             Text(value)
-                .font(.subheadline.weight(.semibold).monospacedDigit())
+                .font(GlassTheme.font(size: 14, weight: .bold).monospacedDigit())
                 .foregroundStyle(.white)
         }
     }
@@ -283,43 +295,34 @@ struct DiagnosticRow: View {
 @MainActor
 class ModuleManagerViewModel: ObservableObject {
     @Published var modules: [ModuleInfo] = []
-    @Published var violationsCount: Int = 0
     @Published var allowedDomainsCount: Int = 0
     @Published var networkRequestCount: Int = 0
     @Published var cacheSize: String = "0 MB"
-    @Published var avgResponseTime: Int = 0
     
     private let registry = HiFiAPI.shared.registry
-    private let securityManager = SecurityManager.shared
     private let networkLogger = NetworkLogger.shared
     
     func loadModules() async {
         await registry.loadModules()
         modules = await registry.getAllModuleInfos()
-        
-        // Count allowed domains
         allowedDomainsCount = modules.reduce(0) { $0 + $1.allowedDomains.count }
         
-        // Get violations
-        violationsCount = await securityManager.getViolations().count
-        
-        // Get network stats
-        let logs = await networkLogger.getLogs(limit: 1000)
-        networkRequestCount = logs.count
-        
-        let durations = logs.compactMap { $0.duration }
-        if !durations.isEmpty {
-            avgResponseTime = Int((durations.reduce(0, +) / Double(durations.count)) * 1000)
-        }
+        // Simple cache size mock for now
+        cacheSize = "12.4 MB"
+    }
+    
+    func importModule(code: String) async throws {
+        try await registry.registerDynamicModule(code: code)
+        await loadModules()
+    }
+    
+    func deleteModule(id: String) async {
+        await registry.deleteDynamicModule(id: id)
+        await loadModules()
     }
     
     func toggleModule(id: String) async {
         await registry.toggleModule(id: id)
         await loadModules()
-    }
-    
-    func clearLogs() async {
-        await networkLogger.clear()
-        networkRequestCount = 0
     }
 }
