@@ -20,7 +20,7 @@ on:
 
 env:
   SCHEME: LiquidGlass
-  PROJECT: LiquidGlass/LiquidGlass.xcodeproj
+  PROJECT: LiquidGlass.xcodeproj
   CONFIGURATION: ${{ github.event.inputs.configuration || 'Release' }}
 
 jobs:
