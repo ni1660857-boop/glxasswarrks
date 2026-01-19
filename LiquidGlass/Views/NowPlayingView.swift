@@ -275,36 +275,3 @@ struct NowPlayingView: View {
         }
     }
 }
-
-// MARK: - Waveform View
-struct WaveformView: View {
-    @EnvironmentObject var player: AudioPlayer
-    @State private var levels: [CGFloat] = Array(repeating: 0.3, count: 40)
-    
-    var body: some View {
-        HStack(spacing: 3) {
-            ForEach(0..<levels.count, id: \.self) { index in
-                RoundedRectangle(cornerRadius: 2)
-                    .fill(
-                        LinearGradient(
-                            colors: [Color.accentGlow, Color.accentSecondary],
-                            startPoint: .bottom,
-                            endPoint: .top
-                        )
-                    )
-                    .frame(width: 4, height: levels[index] * 40)
-                    .animation(.spring(response: 0.1), value: levels[index])
-            }
-        }
-        .frame(height: 40)
-        .onAppear { startAnimation() }
-    }
-    
-    private func startAnimation() {
-        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
-            if player.isPlaying {
-                levels = levels.map { _ in CGFloat.random(in: 0.2...1.0) }
-            }
-        }
-    }
-}

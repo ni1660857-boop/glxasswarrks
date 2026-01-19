@@ -41,7 +41,12 @@ public actor SecurityManager {
     // MARK: - Initialization
     
     private init() {
-        loadTrustedCertificates()
+        // In production, load certificates from a secure bundle
+        // For now, we'll pre-register a test certificate
+        
+        // Add built-in module certificate
+        let builtInCertId = "com.liquidglass.builtin"
+        trustedCertificates[builtInCertId] = "BUILTIN_MODULE_TRUSTED".data(using: .utf8)!
     }
     
     // MARK: - Domain Validation
@@ -137,23 +142,13 @@ public actor SecurityManager {
         switch signature.algorithm {
         case "SHA256withRSA", "SHA256":
             // Verify SHA256 digest
-            let hash = SHA256.hash(data: certificateData)
+            _ = SHA256.hash(data: certificateData)
             // In production: verify signature.data against hash using public key
             return !signature.data.isEmpty
             
         default:
             throw SecurityError.unsupportedAlgorithm(signature.algorithm)
         }
-    }
-    
-    /// Load trusted certificates from bundle
-    private func loadTrustedCertificates() {
-        // In production, load certificates from a secure bundle
-        // For now, we'll pre-register a test certificate
-        
-        // Add built-in module certificate
-        let builtInCertId = "com.liquidglass.builtin"
-        trustedCertificates[builtInCertId] = "BUILTIN_MODULE_TRUSTED".data(using: .utf8)!
     }
     
     /// Add a trusted certificate

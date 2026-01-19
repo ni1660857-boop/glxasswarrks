@@ -52,12 +52,26 @@ public final class AudioPlayer: NSObject, ObservableObject {
     
     private func setupRemoteCommands() {
         let center = MPRemoteCommandCenter.shared()
-        center.playCommand.addTarget { [weak self] _ in self?.play(); return .success }
-        center.pauseCommand.addTarget { [weak self] _ in self?.pause(); return .success }
-        center.nextTrackCommand.addTarget { [weak self] _ in Task { await self?.next() }; return .success }
-        center.previousTrackCommand.addTarget { [weak self] _ in Task { await self?.previous() }; return .success }
+        center.playCommand.addTarget { [weak self] _ in 
+            Task { @MainActor in self?.play() }
+            return .success 
+        }
+        center.pauseCommand.addTarget { [weak self] _ in 
+            Task { @MainActor in self?.pause() }
+            return .success 
+        }
+        center.nextTrackCommand.addTarget { [weak self] _ in 
+            Task { @MainActor in await self?.next() }
+            return .success 
+        }
+        center.previousTrackCommand.addTarget { [weak self] _ in 
+            Task { @MainActor in await self?.previous() }
+            return .success 
+        }
         center.changePlaybackPositionCommand.addTarget { [weak self] event in
-            if let e = event as? MPChangePlaybackPositionCommandEvent { self?.seek(to: e.positionTime) }
+            if let e = event as? MPChangePlaybackPositionCommandEvent { 
+                Task { @MainActor in self?.seek(to: e.positionTime) }
+            }
             return .success
         }
     }
@@ -105,8 +119,10 @@ public final class AudioPlayer: NSObject, ObservableObject {
         
         // Time observer
         timeObserver = player?.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.5, preferredTimescale: 600), queue: .main) { [weak self] time in
-            self?.currentTime = time.seconds
-            self?.updateNowPlayingInfo()
+            Task { @MainActor in
+                self?.currentTime = time.seconds
+                self?.updateNowPlayingInfo()
+            }
         }
         
         // End notification
@@ -126,14 +142,16 @@ public final class AudioPlayer: NSObject, ObservableObject {
     public func next() async {
         guard !queue.isEmpty else { return }
         currentIndex = (currentIndex + 1) % queue.count
-        await play(track: queue[currentIndex].track)
+        let track = queue[currentIndex].track
+        await play(track: track)
     }
     
     public func previous() async {
         if currentTime > 3 { seek(to: 0); return }
         guard !queue.isEmpty else { return }
         currentIndex = currentIndex > 0 ? currentIndex - 1 : queue.count - 1
-        await play(track: queue[currentIndex].track)
+        let track = queue[currentIndex].track
+        await play(track: track)
     }
     
     public func addToQueue(_ track: Track) {
@@ -143,7 +161,10 @@ public final class AudioPlayer: NSObject, ObservableObject {
     public func playNow(_ tracks: [Track], startIndex: Int = 0) async {
         queue = tracks.map { QueueItem(track: $0) }
         currentIndex = startIndex
-        if !queue.isEmpty { await play(track: queue[currentIndex].track) }
+        if !queue.isEmpty {
+            let track = queue[currentIndex].track
+            await play(track: track)
+        }
     }
     
     private func handlePlaybackEnd() async {

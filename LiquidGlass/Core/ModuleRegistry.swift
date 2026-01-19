@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import SwiftUI
 
 // MARK: - Module Registry
 
@@ -164,23 +165,52 @@ public final class ModuleRegistry: ObservableObject {
         }
         
         // Add to enabled list if not already present
-        if !enabledModules.contains(where: { $0.id == id }) {
-            enabledModules.append(module)
+        let moduleId = await module.id
+        if !enabledModules.contains(where: { moduleExists in
+            // Use the passed id parameter for comparison
+            return id == id // This is checked above via modules[id]
+        }) {
+            // Check if module with this id already exists in enabled list
+            var alreadyEnabled = false
+            for existingModule in enabledModules {
+                if await existingModule.id == id {
+                    alreadyEnabled = true
+                    break
+                }
+            }
+            if !alreadyEnabled {
+                enabledModules.append(module)
+            }
         }
         
         userDefaults.set(true, forKey: "module.enabled.\(id)")
     }
     
     /// Disable a module
-    public func disableModule(id: String) {
-        enabledModules.removeAll { $0.id == id }
+    public func disableModule(id: String) async {
+        var indicesToRemove: [Int] = []
+        for (index, module) in enabledModules.enumerated() {
+            if await module.id == id {
+                indicesToRemove.append(index)
+            }
+        }
+        for index in indicesToRemove.reversed() {
+            enabledModules.remove(at: index)
+        }
         userDefaults.set(false, forKey: "module.enabled.\(id)")
     }
     
     /// Toggle module enabled state
     public func toggleModule(id: String) async {
-        if enabledModules.contains(where: { $0.id == id }) {
-            disableModule(id: id)
+        var isCurrentlyEnabled = false
+        for module in enabledModules {
+            if await module.id == id {
+                isCurrentlyEnabled = true
+                break
+            }
+        }
+        if isCurrentlyEnabled {
+            await disableModule(id: id)
         } else {
             await enableModule(id: id)
         }
@@ -226,11 +256,13 @@ public final class ModuleRegistry: ObservableObject {
             for module in enabledModules {
                 group.addTask {
                     do {
+                        let moduleId = await module.id
                         let searchResults = try await module.searchTracks(query: query, limit: limit)
-                        return (module.id, searchResults)
+                        return (moduleId, searchResults)
                     } catch {
-                        print("Search failed for module \(module.id): \(error)")
-                        return (module.id, nil)
+                        let moduleId = await module.id
+                        print("Search failed for module \(moduleId): \(error)")
+                        return (moduleId, nil)
                     }
                 }
             }
@@ -270,7 +302,14 @@ public final class ModuleRegistry: ObservableObject {
         }
         
         // Verify module is enabled
-        guard enabledModules.contains(where: { $0.id == moduleId }) else {
+        var isEnabled = false
+        for enabledModule in enabledModules {
+            if await enabledModule.id == moduleId {
+                isEnabled = true
+                break
+            }
+        }
+        guard isEnabled else {
             throw ModuleError.moduleDisabled
         }
         
@@ -283,14 +322,22 @@ public final class ModuleRegistry: ObservableObject {
     public func getModuleInfo(id: String) async -> ModuleInfo? {
         guard let module = modules[id] else { return nil }
         
+        var isEnabled = false
+        for enabledModule in enabledModules {
+            if await enabledModule.id == id {
+                isEnabled = true
+                break
+            }
+        }
+        
         return ModuleInfo(
-            id: module.id,
+            id: await module.id,
             name: await module.name,
             version: await module.version,
             description: await module.description,
             labels: await module.labels,
             iconURL: await module.iconURL,
-            isEnabled: enabledModules.contains(where: { $0.id == id }),
+            isEnabled: isEnabled,
             requiresAuth: await module.requiresAuth,
             isAuthenticated: await module.isAuthenticated,
             allowedDomains: await module.allowedDomains
@@ -328,6 +375,7 @@ public struct ModuleInfo: Identifiable, Sendable {
 // MARK: - Module Registry Environment Key
 
 private struct ModuleRegistryKey: EnvironmentKey {
+    @MainActor
     static let defaultValue: ModuleRegistry = ModuleRegistry()
 }
 

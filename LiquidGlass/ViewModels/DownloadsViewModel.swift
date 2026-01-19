@@ -162,7 +162,8 @@ class DownloadsViewModelImpl: ObservableObject {
         downloads[index].error = nil
         updateFilteredLists()
         
-        await simulateDownload(downloads[index])
+        let itemToRetry = downloads[index]
+        await simulateDownload(itemToRetry)
     }
     
     // MARK: - Storage
