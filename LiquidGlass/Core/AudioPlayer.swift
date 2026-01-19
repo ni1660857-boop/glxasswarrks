@@ -17,7 +17,7 @@ public final class AudioPlayer: NSObject, ObservableObject, @unchecked Sendable 
     @Published public private(set) var bufferProgress: Double = 0
     @Published public private(set) var currentTrack: Track?
     @Published public private(set) var streamInfo: StreamInfo?
-    @Published public private(set) var error: Error?
+    @Published public var error: Error?
     @Published public var queue: [QueueItem] = []
     @Published public private(set) var currentIndex: Int = 0
     @Published public var volume: Float = 1.0 { didSet { player?.volume = volume } }

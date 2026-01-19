@@ -59,6 +59,16 @@ struct ContentView: View {
             // Ensure modules are loaded on app start
             await hifiAPI.registry.loadModules()
         }
+        .alert("Playback Error", isPresented: Binding(
+            get: { player.error != nil },
+            set: { if !$0 { player.error = nil } }
+        )) {
+            Button("OK", role: .cancel) { player.error = nil }
+        } message: {
+            if let error = player.error {
+                Text(error.localizedDescription)
+            }
+        }
     }
     
     // MARK: - Custom Tab Bar

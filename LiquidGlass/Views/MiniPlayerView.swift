@@ -14,30 +14,31 @@ struct MiniPlayerView: View {
                 HStack(spacing: 12) {
                     // Album art
                     BlurredAsyncImage(url: track.albumCover, cornerRadius: 8)
-                        .frame(width: 48, height: 48)
+                        .frame(width: 44, height: 44)
+                        .shadow(color: .black.opacity(0.3), radius: 6, y: 3)
                     
                     // Track info
                     VStack(alignment: .leading, spacing: 2) {
                         Text(track.title)
-                            .font(.subheadline.weight(.medium))
+                            .font(.system(size: 15, weight: .semibold))
                             .foregroundStyle(.white)
                             .lineLimit(1)
                         
                         Text(track.artistName)
-                            .font(.caption)
-                            .foregroundStyle(Color.textSecondary)
+                            .font(.system(size: 13))
+                            .foregroundStyle(GlassTheme.gray)
                             .lineLimit(1)
                     }
                     
                     Spacer()
                     
                     // Controls
-                    HStack(spacing: 20) {
+                    HStack(spacing: 16) {
                         Button {
                             player.togglePlayPause()
                         } label: {
                             Image(systemName: player.isPlaying ? "pause.fill" : "play.fill")
-                                .font(.title2)
+                                .font(.system(size: 24))
                                 .foregroundStyle(.white)
                         }
                         
@@ -45,39 +46,35 @@ struct MiniPlayerView: View {
                             Task { await player.next() }
                         } label: {
                             Image(systemName: "forward.fill")
-                                .font(.title3)
-                                .foregroundStyle(Color.textSecondary)
+                                .font(.system(size: 20))
+                                .foregroundStyle(GlassTheme.gray)
                         }
                     }
+                    .padding(.trailing, 8)
                 }
-                .padding(12)
+                .padding(10)
+                .background(
+                    GlassTheme.glass.opacity(0.9)
+                )
                 .background(
                     ZStack {
-                        // Blurred album art background
                         if let url = track.albumCover {
                             AsyncImage(url: url) { image in
-                                image
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .blur(radius: 30)
-                                    .overlay(Color.black.opacity(0.6))
-                            } placeholder: {
-                                Color.surfaceSecondary
-                            }
-                        } else {
-                            Color.surfaceSecondary
-                        }
+                                image.resizable().aspectRatio(contentMode: .fill)
+                            } placeholder: { Color.black }
+                        } else { Color.black }
                     }
+                    .blur(radius: 40)
+                    .opacity(0.5)
                 )
                 .clipShape(RoundedRectangle(cornerRadius: 16))
                 .overlay(
                     RoundedRectangle(cornerRadius: 16)
-                        .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                        .stroke(.white.opacity(0.1), lineWidth: 1)
                 )
-                .shadow(color: .black.opacity(0.3), radius: 10, y: 5)
+                .shadow(color: .black.opacity(0.4), radius: 15, y: 8)
             }
-            .buttonStyle(.plain)
-            .padding(.horizontal)
+            .buttonStyle(ScaleButtonStyle())
         }
     }
 }

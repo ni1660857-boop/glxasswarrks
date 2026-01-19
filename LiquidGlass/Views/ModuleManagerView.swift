@@ -5,8 +5,9 @@ import SwiftUI
 struct ModuleManagerView: View {
     @StateObject private var viewModel = ModuleManagerViewModel()
     @State private var showImportSheet = false
-    @State private var importCode = ""
     @State private var importError: String?
+    @State private var isFileImporterPresented = false
+    @State private var isImporting = false
     
     var body: some View {
         NavigationStack {
@@ -68,52 +69,88 @@ struct ModuleManagerView: View {
         ZStack {
             GlassTheme.darkGray.ignoresSafeArea()
             
-            VStack(spacing: 20) {
-                Text("Import Module")
-                    .font(GlassTheme.font(size: 20, weight: .bold))
-                    .foregroundStyle(.white)
-                    .padding(.top)
-                
-                Text("Paste your JavaScript module code below.")
-                    .font(GlassTheme.font(size: 14))
-                    .foregroundStyle(GlassTheme.gray)
-                
-                TextEditor(text: $importCode)
-                    .font(.system(.body, design: .monospaced))
-                    .scrollContentBackground(.hidden)
-                    .background(Color.black.opacity(0.5))
-                    .foregroundStyle(Color.green)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .padding()
-                
-                if let error = importError {
-                    Text(error)
-                        .foregroundStyle(GlassTheme.pink)
-                        .font(.caption)
-                }
-                
-                Button {
-                    Task {
-                        do {
-                            try await viewModel.importModule(code: importCode)
-                            showImportSheet = false
-                            importCode = ""
-                            importError = nil
-                        } catch {
-                            importError = error.localizedDescription
-                        }
-                    }
-                } label: {
-                    Text("Install Module")
-                        .font(GlassTheme.font(size: 16, weight: .bold))
-                        .foregroundStyle(.black)
-                        .frame(maxWidth: .infinity)
+            VStack(spacing: 24) {
+                if isImporting {
+                    GlassLoadingIndicator()
+                    Text("Importing module...")
+                        .foregroundStyle(GlassTheme.gray)
+                } else {
+                    Text("Import Module")
+                        .font(GlassTheme.font(size: 20, weight: .bold))
+                        .foregroundStyle(.white)
+                    
+                    Image(systemName: "doc.badge.plus")
+                        .font(.system(size: 64))
+                        .foregroundStyle(GlassTheme.cyan)
                         .padding()
-                        .background(GlassTheme.cyan)
-                        .clipShape(Capsule())
+                    
+                    Text("Select a JavaScript (.js) module file to import.")
+                        .multilineTextAlignment(.center)
+                        .font(GlassTheme.font(size: 16))
+                        .foregroundStyle(GlassTheme.gray)
+                        .padding(.horizontal)
+                    
+                    Button {
+                        isFileImporterPresented = true
+                    } label: {
+                        Text("Select File")
+                            .font(GlassTheme.font(size: 16, weight: .bold))
+                            .foregroundStyle(.black)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(GlassTheme.cyan)
+                            .clipShape(Capsule())
+                    }
+                    .padding(.horizontal)
+                    
+                    Button("Cancel", role: .cancel) {
+                        showImportSheet = false
+                    }
+                    .foregroundStyle(GlassTheme.gray)
                 }
-                .padding()
             }
+            .padding()
+        }
+        .fileImporter(
+            isPresented: $isFileImporterPresented,
+            allowedContentTypes: [.javaScript, .plainText],
+            allowsMultipleSelection: false
+        ) { result in
+            handleFileImport(result)
+        }
+    }
+    
+    private func handleFileImport(_ result: Result<[URL], Error>) {
+        isImporting = true
+        defer { isImporting = false }
+        
+        switch result {
+        case .success(let urls):
+            guard let url = urls.first else { return }
+            
+            // Access security scoped resource
+            guard url.startAccessingSecurityScopedResource() else {
+                importError = "Permission denied"
+                return
+            }
+            defer { url.stopAccessingSecurityScopedResource() }
+            
+            do {
+                let code = try String(contentsOf: url, encoding: .utf8)
+                Task {
+                    do {
+                        try await viewModel.importModule(code: code)
+                        showImportSheet = false
+                    } catch {
+                        importError = error.localizedDescription
+                    }
+                }
+            } catch {
+                importError = "Failed to read file: \(error.localizedDescription)"
+            }
+            
+        case .failure(let error):
+            importError = error.localizedDescription
         }
     }
     
