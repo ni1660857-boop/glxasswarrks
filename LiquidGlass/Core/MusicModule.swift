@@ -550,8 +550,8 @@ public actor JavaScriptModule: MusicModule, ObservableObject {
                     throw ModuleError.invalidResponse("Missing URL")
                 }
                 
-                let qualityStr = jsValue?.objectForKeyedSubscript("quality")?.toString() ?? "auto"
-                let quality = AudioQuality(rawValue: qualityStr) ?? .auto
+                let qualityStr = jsValue?.objectForKeyedSubscript("quality")?.toString() ?? "NORMAL"
+                let quality = AudioQuality(rawValue: qualityStr) ?? .normal
                 
                 return StreamInfo(url: url, quality: quality, format: .mp3) // Default to mp3 for now
             }
