@@ -6,7 +6,7 @@ import Combine
 // MARK: - Audio Player
 
 @MainActor
-public final class AudioPlayer: NSObject, ObservableObject {
+public final class AudioPlayer: NSObject, ObservableObject, @unchecked Sendable {
     public static let shared = AudioPlayer()
     
     // MARK: - Published State
