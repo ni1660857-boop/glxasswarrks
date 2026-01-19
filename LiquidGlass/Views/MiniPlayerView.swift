@@ -54,7 +54,7 @@ struct MiniPlayerView: View {
                 }
                 .padding(10)
                 .background(
-                    GlassTheme.glass.opacity(0.9)
+                    .ultraThinMaterial
                 )
                 .background(
                     ZStack {
