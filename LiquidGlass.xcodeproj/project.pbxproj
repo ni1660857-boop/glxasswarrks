@@ -1,0 +1,481 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A0000001204D5B1D00A12345 /* LiquidGlassApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000204D5B1D00A12345 /* LiquidGlassApp.swift */; };
+		A0000003204D5B1D00A12345 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000002204D5B1D00A12345 /* ContentView.swift */; };
+		A0000005204D5B1E00A12345 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A0000004204D5B1E00A12345 /* Assets.xcassets */; };
+		A0000010204D5B1D00A12345 /* MusicModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000009204D5B1D00A12345 /* MusicModule.swift */; };
+		A0000011204D5B1D00A12345 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A000000A204D5B1D00A12345 /* Models.swift */; };
+		A0000012204D5B1D00A12345 /* ModuleRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A000000B204D5B1D00A12345 /* ModuleRegistry.swift */; };
+		A0000013204D5B1D00A12345 /* ImMiserableModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = A000000C204D5B1D00A12345 /* ImMiserableModule.swift */; };
+		A0000014204D5B1D00A12345 /* HiFiAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = A000000D204D5B1D00A12345 /* HiFiAPI.swift */; };
+		A0000015204D5B1D00A12345 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A000000E204D5B1D00A12345 /* AudioPlayer.swift */; };
+		A0000016204D5B1D00A12345 /* SecurityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A000000F204D5B1D00A12345 /* SecurityManager.swift */; };
+		A0000020204D5B1D00A12345 /* NowPlayingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000017204D5B1D00A12345 /* NowPlayingView.swift */; };
+		A0000021204D5B1D00A12345 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000018204D5B1D00A12345 /* SearchView.swift */; };
+		A0000022204D5B1D00A12345 /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000019204D5B1D00A12345 /* LibraryView.swift */; };
+		A0000023204D5B1D00A12345 /* DownloadsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A000001A204D5B1D00A12345 /* DownloadsView.swift */; };
+		A0000024204D5B1D00A12345 /* ModuleManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A000001B204D5B1D00A12345 /* ModuleManagerView.swift */; };
+		A0000025204D5B1D00A12345 /* GlassComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A000001C204D5B1D00A12345 /* GlassComponents.swift */; };
+		A0000026204D5B1D00A12345 /* MiniPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A000001D204D5B1D00A12345 /* MiniPlayerView.swift */; };
+		A0000027204D5B1D00A12345 /* QueueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A000001E204D5B1D00A12345 /* QueueView.swift */; };
+		A0000028204D5B1D00A12345 /* WaveformView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A000001F204D5B1D00A12345 /* WaveformView.swift */; };
+		A0000030204D5B1D00A12345 /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000029204D5B1D00A12345 /* PlayerViewModel.swift */; };
+		A0000031204D5B1D00A12345 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A000002A204D5B1D00A12345 /* SearchViewModel.swift */; };
+		A0000032204D5B1D00A12345 /* LibraryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A000002B204D5B1D00A12345 /* LibraryViewModel.swift */; };
+		A0000033204D5B1D00A12345 /* DownloadsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A000002C204D5B1D00A12345 /* DownloadsViewModel.swift */; };
+		A0000034204D5B1D00A12345 /* SpotifyMetadataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A000002D204D5B1D00A12345 /* SpotifyMetadataService.swift */; };
+		A0000035204D5B1D00A12345 /* NetworkLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A000002E204D5B1D00A12345 /* NetworkLogger.swift */; };
+		A0000036204D5B1D00A12345 /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A000002F204D5B1D00A12345 /* CacheManager.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A0000000204D5B1D00A12345 /* LiquidGlassApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassApp.swift; sourceTree = "<group>"; };
+		A0000002204D5B1D00A12345 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A0000004204D5B1E00A12345 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A0000006204D5B1E00A12345 /* LiquidGlass.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiquidGlass.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A0000007204D5B1E00A12345 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A0000009204D5B1D00A12345 /* MusicModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicModule.swift; sourceTree = "<group>"; };
+		A000000A204D5B1D00A12345 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		A000000B204D5B1D00A12345 /* ModuleRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModuleRegistry.swift; sourceTree = "<group>"; };
+		A000000C204D5B1D00A12345 /* ImMiserableModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImMiserableModule.swift; sourceTree = "<group>"; };
+		A000000D204D5B1D00A12345 /* HiFiAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiFiAPI.swift; sourceTree = "<group>"; };
+		A000000E204D5B1D00A12345 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
+		A000000F204D5B1D00A12345 /* SecurityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityManager.swift; sourceTree = "<group>"; };
+		A0000017204D5B1D00A12345 /* NowPlayingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingView.swift; sourceTree = "<group>"; };
+		A0000018204D5B1D00A12345 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		A0000019204D5B1D00A12345 /* LibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryView.swift; sourceTree = "<group>"; };
+		A000001A204D5B1D00A12345 /* DownloadsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadsView.swift; sourceTree = "<group>"; };
+		A000001B204D5B1D00A12345 /* ModuleManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModuleManagerView.swift; sourceTree = "<group>"; };
+		A000001C204D5B1D00A12345 /* GlassComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassComponents.swift; sourceTree = "<group>"; };
+		A000001D204D5B1D00A12345 /* MiniPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniPlayerView.swift; sourceTree = "<group>"; };
+		A000001E204D5B1D00A12345 /* QueueView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueueView.swift; sourceTree = "<group>"; };
+		A000001F204D5B1D00A12345 /* WaveformView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveformView.swift; sourceTree = "<group>"; };
+		A0000029204D5B1D00A12345 /* PlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewModel.swift; sourceTree = "<group>"; };
+		A000002A204D5B1D00A12345 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
+		A000002B204D5B1D00A12345 /* LibraryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryViewModel.swift; sourceTree = "<group>"; };
+		A000002C204D5B1D00A12345 /* DownloadsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadsViewModel.swift; sourceTree = "<group>"; };
+		A000002D204D5B1D00A12345 /* SpotifyMetadataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyMetadataService.swift; sourceTree = "<group>"; };
+		A000002E204D5B1D00A12345 /* NetworkLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkLogger.swift; sourceTree = "<group>"; };
+		A000002F204D5B1D00A12345 /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
+		A0000008204D5B1D00A12345 /* LiquidGlass.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LiquidGlass.entitlements; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A0000040204D5B1D00A12345 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A0000050204D5B1D00A12345 = {
+			isa = PBXGroup;
+			children = (
+				A0000051204D5B1D00A12345 /* LiquidGlass */,
+				A0000052204D5B1D00A12345 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A0000051204D5B1D00A12345 /* LiquidGlass */ = {
+			isa = PBXGroup;
+			children = (
+				A0000000204D5B1D00A12345 /* LiquidGlassApp.swift */,
+				A0000002204D5B1D00A12345 /* ContentView.swift */,
+				A0000053204D5B1D00A12345 /* Core */,
+				A0000054204D5B1D00A12345 /* Modules */,
+				A0000055204D5B1D00A12345 /* Views */,
+				A0000056204D5B1D00A12345 /* ViewModels */,
+				A0000057204D5B1D00A12345 /* Services */,
+				A0000004204D5B1E00A12345 /* Assets.xcassets */,
+				A0000007204D5B1E00A12345 /* Info.plist */,
+				A0000008204D5B1D00A12345 /* LiquidGlass.entitlements */,
+			);
+			path = LiquidGlass;
+			sourceTree = "<group>";
+		};
+		A0000052204D5B1D00A12345 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A0000006204D5B1E00A12345 /* LiquidGlass.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A0000053204D5B1D00A12345 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				A0000009204D5B1D00A12345 /* MusicModule.swift */,
+				A000000A204D5B1D00A12345 /* Models.swift */,
+				A000000B204D5B1D00A12345 /* ModuleRegistry.swift */,
+				A000000D204D5B1D00A12345 /* HiFiAPI.swift */,
+				A000000E204D5B1D00A12345 /* AudioPlayer.swift */,
+				A000000F204D5B1D00A12345 /* SecurityManager.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		A0000054204D5B1D00A12345 /* Modules */ = {
+			isa = PBXGroup;
+			children = (
+				A000000C204D5B1D00A12345 /* ImMiserableModule.swift */,
+			);
+			path = Modules;
+			sourceTree = "<group>";
+		};
+		A0000055204D5B1D00A12345 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A0000017204D5B1D00A12345 /* NowPlayingView.swift */,
+				A0000018204D5B1D00A12345 /* SearchView.swift */,
+				A0000019204D5B1D00A12345 /* LibraryView.swift */,
+				A000001A204D5B1D00A12345 /* DownloadsView.swift */,
+				A000001B204D5B1D00A12345 /* ModuleManagerView.swift */,
+				A000001C204D5B1D00A12345 /* GlassComponents.swift */,
+				A000001D204D5B1D00A12345 /* MiniPlayerView.swift */,
+				A000001E204D5B1D00A12345 /* QueueView.swift */,
+				A000001F204D5B1D00A12345 /* WaveformView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A0000056204D5B1D00A12345 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				A0000029204D5B1D00A12345 /* PlayerViewModel.swift */,
+				A000002A204D5B1D00A12345 /* SearchViewModel.swift */,
+				A000002B204D5B1D00A12345 /* LibraryViewModel.swift */,
+				A000002C204D5B1D00A12345 /* DownloadsViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A0000057204D5B1D00A12345 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A000002D204D5B1D00A12345 /* SpotifyMetadataService.swift */,
+				A000002E204D5B1D00A12345 /* NetworkLogger.swift */,
+				A000002F204D5B1D00A12345 /* CacheManager.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A0000060204D5B1D00A12345 /* LiquidGlass */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A0000070204D5B1E00A12345 /* Build configuration list for PBXNativeTarget "LiquidGlass" */;
+			buildPhases = (
+				A0000061204D5B1D00A12345 /* Sources */,
+				A0000040204D5B1D00A12345 /* Frameworks */,
+				A0000062204D5B1D00A12345 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LiquidGlass;
+			productName = LiquidGlass;
+			productReference = A0000006204D5B1E00A12345 /* LiquidGlass.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A0000080204D5B1D00A12345 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					A0000060204D5B1D00A12345 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = A0000081204D5B1D00A12345 /* Build configuration list for PBXProject "LiquidGlass" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A0000050204D5B1D00A12345;
+			productRefGroup = A0000052204D5B1D00A12345 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A0000060204D5B1D00A12345 /* LiquidGlass */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A0000062204D5B1D00A12345 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A0000005204D5B1E00A12345 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A0000061204D5B1D00A12345 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A0000001204D5B1D00A12345 /* LiquidGlassApp.swift in Sources */,
+				A0000003204D5B1D00A12345 /* ContentView.swift in Sources */,
+				A0000010204D5B1D00A12345 /* MusicModule.swift in Sources */,
+				A0000011204D5B1D00A12345 /* Models.swift in Sources */,
+				A0000012204D5B1D00A12345 /* ModuleRegistry.swift in Sources */,
+				A0000013204D5B1D00A12345 /* ImMiserableModule.swift in Sources */,
+				A0000014204D5B1D00A12345 /* HiFiAPI.swift in Sources */,
+				A0000015204D5B1D00A12345 /* AudioPlayer.swift in Sources */,
+				A0000016204D5B1D00A12345 /* SecurityManager.swift in Sources */,
+				A0000020204D5B1D00A12345 /* NowPlayingView.swift in Sources */,
+				A0000021204D5B1D00A12345 /* SearchView.swift in Sources */,
+				A0000022204D5B1D00A12345 /* LibraryView.swift in Sources */,
+				A0000023204D5B1D00A12345 /* DownloadsView.swift in Sources */,
+				A0000024204D5B1D00A12345 /* ModuleManagerView.swift in Sources */,
+				A0000025204D5B1D00A12345 /* GlassComponents.swift in Sources */,
+				A0000026204D5B1D00A12345 /* MiniPlayerView.swift in Sources */,
+				A0000027204D5B1D00A12345 /* QueueView.swift in Sources */,
+				A0000028204D5B1D00A12345 /* WaveformView.swift in Sources */,
+				A0000030204D5B1D00A12345 /* PlayerViewModel.swift in Sources */,
+				A0000031204D5B1D00A12345 /* SearchViewModel.swift in Sources */,
+				A0000032204D5B1D00A12345 /* LibraryViewModel.swift in Sources */,
+				A0000033204D5B1D00A12345 /* DownloadsViewModel.swift in Sources */,
+				A0000034204D5B1D00A12345 /* SpotifyMetadataService.swift in Sources */,
+				A0000035204D5B1D00A12345 /* NetworkLogger.swift in Sources */,
+				A0000036204D5B1D00A12345 /* CacheManager.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		A0000090204D5B1E00A12345 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		A0000091204D5B1E00A12345 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A0000092204D5B1E00A12345 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = LiquidGlass/LiquidGlass.entitlements;
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LiquidGlass/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Liquid Glass";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.liquidglass.player;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A0000093204D5B1E00A12345 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = LiquidGlass/LiquidGlass.entitlements;
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LiquidGlass/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Liquid Glass";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.liquidglass.player;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A0000070204D5B1E00A12345 /* Build configuration list for PBXNativeTarget "LiquidGlass" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A0000092204D5B1E00A12345 /* Debug */,
+				A0000093204D5B1E00A12345 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A0000081204D5B1D00A12345 /* Build configuration list for PBXProject "LiquidGlass" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A0000090204D5B1E00A12345 /* Debug */,
+				A0000091204D5B1E00A12345 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A0000080204D5B1D00A12345 /* Project object */;
+}
