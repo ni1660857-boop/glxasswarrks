@@ -536,22 +536,41 @@ public actor JavaScriptModule: MusicModule, ObservableObject {
     
     public func getTrackStream(trackId: String, preferredQuality: AudioQuality) async throws -> StreamInfo {
         return try await withCheckedThrowingContinuation { continuation in
-             guard let streamFunc = context.objectForKeyedSubscript("module")?.objectForKeyedSubscript("getTrackStream") else {
-                continuation.resume(throwing: ModuleError.notImplemented)
-                return
+            // Call JS function
+            // Expectation: getTrackStreamUrl(trackId, preferredQuality) -> Promise<{streamUrl: "...", ...}>
+            let streamFunc = context.objectForKeyedSubscript("module")?.objectForKeyedSubscript("getTrackStreamUrl")
+            
+            // Fallback to legacy name if needed
+            let funcToCall = streamFunc?.isUndefined == false ? streamFunc : context.objectForKeyedSubscript("module")?.objectForKeyedSubscript("getTrackStream")
+            
+            guard let finalFunc = funcToCall, !finalFunc.isUndefined else {
+                 continuation.resume(throwing: ModuleError.notImplemented)
+                 return
             }
             
-            let result = streamFunc.call(withArguments: [trackId, preferredQuality.rawValue])
+            let result = finalFunc.call(withArguments: [trackId, preferredQuality.rawValue])
             
             handleJSResult(result, continuation: continuation) { jsValue in
-                // Expects: { url: "...", quality: "lossless", format: "mp3" }
-                guard let urlString = jsValue?.objectForKeyedSubscript("url")?.toString(),
-                      let url = URL(string: urlString) else {
-                    throw ModuleError.invalidResponse("Missing URL")
+                // Expects: { streamUrl: "...", ... } or { url: "...", ... }
+                let urlString = jsValue?.objectForKeyedSubscript("streamUrl")?.toString() ??
+                                jsValue?.objectForKeyedSubscript("url")?.toString()
+                
+                guard let urlString = urlString, let url = URL(string: urlString) else {
+                    throw ModuleError.invalidResponse("Missing streamUrl or url")
                 }
                 
-                let qualityStr = jsValue?.objectForKeyedSubscript("quality")?.toString() ?? "NORMAL"
-                let quality = AudioQuality(rawValue: qualityStr) ?? .normal
+                let qualityStr = jsValue?.objectForKeyedSubscript("track")?.objectForKeyedSubscript("audioQuality")?.toString() ?? 
+                                 jsValue?.objectForKeyedSubscript("quality")?.toString() ?? "NORMAL"
+                
+                // Map common quality strings
+                let quality: AudioQuality
+                switch qualityStr.uppercased() {
+                case "HI_RES", "HIRES", "MASTER": quality = .hiRes
+                case "LOSSLESS": quality = .lossless
+                case "HIGH": quality = .high
+                case "LOW": quality = .low
+                default: quality = .normal
+                }
                 
                 return StreamInfo(
                     url: url,
@@ -622,7 +641,10 @@ public actor JavaScriptModule: MusicModule, ObservableObject {
                        
                     let artist = item.objectForKeyedSubscript("artist")?.toString() ?? "Unknown"
                     let album = item.objectForKeyedSubscript("album")?.toString() ?? "Unknown"
-                    let artUrl = item.objectForKeyedSubscript("artwork")?.toString()
+                    
+                    // Support both 'artwork' and 'albumCover'
+                    let artUrl = item.objectForKeyedSubscript("albumCover")?.toString() ??
+                                 item.objectForKeyedSubscript("artwork")?.toString()
                     
                     tracks.append(Track(
                         id: id,
@@ -630,7 +652,7 @@ public actor JavaScriptModule: MusicModule, ObservableObject {
                         artistName: artist,
                         album: album,
                         albumCover: URL(string: artUrl ?? ""),
-                        duration: 0,
+                        duration: item.objectForKeyedSubscript("duration")?.toDouble() ?? 0,
                         moduleId: self.id
                     ))
                 }

@@ -48,10 +48,157 @@ public final class ModuleRegistry: ObservableObject {
     // MARK: - Module Registration
     
     /// Register built-in modules
+    /// Built-in I'm Miserable Module Code
+    private static let imMiserableJS = """
+/**
+ * I'm Miserable Module
+ * dedicated module for tidal.kinoplus.online
+ */
+
+const BASE_URL = 'https://tidal.kinoplus.online';
+
+async function fetchJson(endpoint) {
+    const url = BASE_URL + endpoint;
+    const response = await fetch(url, {
+        headers: {
+            'Accept': 'application/json',
+            'User-Agent': 'ImMiserable/1.0',
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error('HTTP ' + response.status);
+    }
+
+    return await response.json();
+}
+
+function extractStreamUrl(manifest) {
+    if (!manifest) return null;
+    try {
+        // Manifest is base64 encoded
+        const decoded = atob(manifest);
+        const parsed = JSON.parse(decoded);
+        
+        if (parsed.urls && Array.isArray(parsed.urls) && parsed.urls.length > 0) {
+            return parsed.urls[0];
+        }
+    } catch (error) {
+        console.error('[ImMiserable] Failed to decode manifest:', error);
+    }
+    return null;
+}
+
+function getTidalCoverUrl(uuid) {
+    if (!uuid || typeof uuid !== 'string') return null;
+    if (uuid.startsWith('http')) return uuid;
+    // Check if it looks like a GUID/UUID
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(uuid)) {
+        return uuid; 
+    }
+    const path = uuid.replace(/-/g, '/');
+    return `https://resources.tidal.com/images/${path}/640x640.jpg`;
+}
+
+async function searchTracks(query, limit = 25) {
+    try {
+        const data = await fetchJson('/search/?s=' + encodeURIComponent(query) + '&limit=' + limit);
+        
+        // Response format: {"version":"2.0", "data":{ "items": [...] }}
+        const items = data.data?.items || [];
+        
+        return {
+            tracks: items.map(track => ({
+                id: track.id,
+                title: track.title,
+                artist: track.artist?.name || track.artists?.[0]?.name || 'Unknown Artist',
+                artistId: track.artist?.id || track.artists?.[0]?.id,
+                album: track.album?.title || 'Unknown Album',
+                albumId: track.album?.id,
+                albumCover: getTidalCoverUrl(track.album?.cover),
+                duration: track.duration || 0,
+                trackNumber: track.trackNumber,
+                audioQuality: track.audioQuality || 'LOSSLESS',
+                streamUrl: null // Will be fetched later
+            })),
+            total: data.data?.totalNumberOfItems || items.length,
+        };
+    } catch (error) {
+        console.error('[ImMiserable] Search failed:', error);
+        throw error;
+    }
+}
+
+async function getTrackStreamUrl(trackId, preferredQuality = 'LOSSLESS') {
+    try {
+        // Request specific quality
+        const data = await fetchJson('/track/?id=' + trackId + '&quality=' + preferredQuality);
+        
+        // Response format: {"version":"2.0", "data":{ "trackId":..., "manifest": "..." }}
+        const trackData = data.data;
+
+        if (!trackData || !trackData.manifest) {
+            throw new Error('No manifest found in response');
+        }
+
+        const streamUrl = extractStreamUrl(trackData.manifest);
+        if (!streamUrl) {
+            throw new Error('Failed to extract stream URL from manifest');
+        }
+
+        return {
+            streamUrl,
+            track: {
+                id: trackData.trackId || trackId,
+                audioQuality: trackData.audioQuality,
+                bitDepth: trackData.bitDepth,
+                sampleRate: trackData.sampleRate,
+            }
+        };
+
+    } catch (error) {
+        console.error('[ImMiserable] Get stream failed:', error);
+        throw error;
+    }
+}
+
+async function getAlbum(albumId) {
+    // Basic fallback implementation
+    try {
+        const data = await fetchJson('/album/?id=' + albumId);
+        throw new Error('Album fetch not fully implemented for ImMiserable');
+    } catch (e) {
+        throw e;
+    }
+}
+
+return {
+    id: 'im-miserable',
+    name: 'Im Miserable',
+    version: '1.0.0',
+    description: 'KINOPLUS TIDAL INSTANCE, LOSSLESS STREAMING',
+    labels: ['High Quality', 'Lossless'],
+    searchTracks,
+    getTrackStreamUrl,
+    getAlbum
+};
+"""
+
+    /// Register built-in modules
     private func registerBuiltInModules() {
-        // Register I'm Miserable module (enabled by default)
-        builtInModuleFactories["im-miserable"] = {
-            ImMiserableModule()
+        // Register I'm Miserable module (JS Version)
+        builtInModuleFactories["im-miserable"] = { [weak self] in
+            do {
+                return try JavaScriptModule(sourceCode: Self.imMiserableJS)
+            } catch {
+                print("Failed to load ImMiserable JS Module: \(error)")
+                // Fallback to simpler empty module or handle error gracefully
+                // For now, we return the native one if JS fails, or crash if that's preferred?
+                // Let's assume JS works. If not, it won't be in the list.
+                // But factory expects a return value.
+                // We'll return the native one as a catastrophic fallback if available, or just throw/crash in dev
+                return ImMiserableModule() // Fallback to native
+            }
         }
         
         // Add more built-in modules here as needed
