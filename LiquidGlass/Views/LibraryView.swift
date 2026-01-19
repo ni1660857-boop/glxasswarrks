@@ -6,6 +6,9 @@ struct LibraryView: View {
     @StateObject private var viewModel = LibraryViewModel()
     @EnvironmentObject var player: AudioPlayer
     
+    @State private var showCreatePlaylist = false
+    @State private var newPlaylistName = ""
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -21,13 +24,21 @@ struct LibraryView: View {
                             recentSection
                         }
                         
-                        // Playlists placeholder
+                        // Playlists
                         playlistsSection
                     }
                     .padding()
                 }
             }
             .navigationTitle("Library")
+            .alert("New Playlist", isPresented: $showCreatePlaylist) {
+                TextField("Playlist Name", text: $newPlaylistName)
+                Button("Cancel", role: .cancel) { }
+                Button("Create") {
+                    viewModel.createPlaylist(name: newPlaylistName)
+                    newPlaylistName = ""
+                }
+            }
         }
     }
     
@@ -63,17 +74,41 @@ struct LibraryView: View {
     // MARK: - Playlists Section
     private var playlistsSection: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Your Playlists")
-                .font(.title3.weight(.bold))
-                .foregroundStyle(.white)
+            HStack {
+                Text("Your Playlists")
+                    .font(.title3.weight(.bold))
+                    .foregroundStyle(.white)
+                Spacer()
+                Button {
+                    showCreatePlaylist = true
+                } label: {
+                    Image(systemName: "plus")
+                        .font(.title3)
+                        .foregroundStyle(GlassTheme.cyan)
+                }
+            }
             
-            VStack(spacing: 12) {
-                ForEach(0..<3) { index in
-                    PlaylistRow(
-                        title: "Playlist \(index + 1)",
-                        trackCount: 12 + index * 5,
-                        imageURL: nil
-                    )
+            if viewModel.playlists.isEmpty {
+                 Text("No playlists yet")
+                    .font(.subheadline)
+                    .foregroundStyle(Color.textTertiary)
+                    .padding(.vertical, 8)
+            } else {
+                VStack(spacing: 12) {
+                    ForEach(viewModel.playlists) { playlist in
+                        PlaylistRow(
+                            title: playlist.name,
+                            trackCount: playlist.tracks.count,
+                            imageURL: nil
+                        )
+                        .contextMenu {
+                            Button(role: .destructive) {
+                                viewModel.deletePlaylist(id: playlist.id)
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -172,13 +207,38 @@ struct PlaylistRow: View {
 class LibraryViewModel: ObservableObject {
     @Published var recentTracks: [Track] = []
     @Published var likedTracks: [Track] = []
+    @Published var playlists: [Playlist] = []
     @Published var isLoading = false
+    
+    private let userDefaults = UserDefaults.standard
+    private let playlistsKey = "user.playlists"
     
     init() {
         loadLibrary()
     }
     
     func loadLibrary() {
-        // Load from cache/storage
+        // Load Playlists
+        if let data = userDefaults.data(forKey: playlistsKey),
+           let savedPlaylists = try? JSONDecoder().decode([Playlist].self, from: data) {
+            self.playlists = savedPlaylists
+        }
+    }
+    
+    func createPlaylist(name: String) {
+        let newPlaylist = Playlist(name: name)
+        playlists.append(newPlaylist)
+        savePlaylists()
+    }
+    
+    func deletePlaylist(id: UUID) {
+        playlists.removeAll { $0.id == id }
+        savePlaylists()
+    }
+    
+    private func savePlaylists() {
+        if let data = try? JSONEncoder().encode(playlists) {
+            userDefaults.set(data, forKey: playlistsKey)
+        }
     }
 }

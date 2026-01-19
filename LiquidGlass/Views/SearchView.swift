@@ -42,6 +42,9 @@ struct SearchView: View {
             
             TextField("Songs, artists, albums", text: $viewModel.query)
                 .foregroundStyle(.white)
+                .padding(8)
+                .background(Color.white.opacity(0.1))
+                .cornerRadius(8)
                 .autocorrectionDisabled()
                 .textInputAutocapitalization(.never)
                 .onSubmit { Task { await viewModel.search() } }
@@ -172,6 +175,21 @@ struct TrackRow: View {
             .glassCard(cornerRadius: 12)
         }
         .buttonStyle(ScaleButtonStyle())
+        .contextMenu {
+            Button {
+                Task {
+                    await DownloadsManager.shared.startDownload(track)
+                }
+            } label: {
+                Label("Download", systemImage: "arrow.down.circle")
+            }
+            
+            Button {
+                // Future: Add to playlist
+            } label: {
+                Label("Add to Playlist", systemImage: "plus.circle")
+            }
+        }
     }
 }
 

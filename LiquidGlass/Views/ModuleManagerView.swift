@@ -20,17 +20,26 @@ struct ModuleManagerView: View {
                             Text("Modules")
                                 .font(GlassTheme.font(size: 34, weight: .bold))
                                 .foregroundStyle(GlassTheme.white)
-                            Spacer()
-                            Button {
-                                showImportSheet = true
-                            } label: {
-                                Image(systemName: "plus.circle.fill")
-                                    .font(.system(size: 24))
-                                    .foregroundStyle(GlassTheme.cyan)
-                            }
                         }
                         .padding(.horizontal)
                         .padding(.top)
+                        
+                        // Import Button
+                        Button {
+                            showImportSheet = true
+                        } label: {
+                            HStack {
+                                Image(systemName: "plus.circle.fill")
+                                Text("Add Module")
+                                    .fontWeight(.semibold)
+                            }
+                            .foregroundStyle(.black)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(GlassTheme.cyan)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                        }
+                        .padding(.horizontal)
                         
                         // Modules List
                         modulesSection

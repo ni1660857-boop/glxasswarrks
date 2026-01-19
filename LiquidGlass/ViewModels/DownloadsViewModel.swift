@@ -3,7 +3,10 @@ import Foundation
 // MARK: - Downloads View Model
 
 @MainActor
-class DownloadsViewModelImpl: ObservableObject {
+@MainActor
+class DownloadsManager: ObservableObject {
+    static let shared = DownloadsManager()
+    
     @Published var downloads: [DownloadItem] = []
     @Published var activeDownloads: [DownloadItem] = []
     @Published var completedDownloads: [DownloadItem] = []

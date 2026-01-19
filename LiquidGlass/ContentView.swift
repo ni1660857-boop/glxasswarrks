@@ -14,25 +14,24 @@ struct ContentView: View {
             GlassTheme.black.ignoresSafeArea()
             
             // Tab content
-            TabView(selection: $selectedTab) {
-                SearchView()
-                    .tag(0)
-                    .oledBackground()
-                
-                LibraryView()
-                    .tag(1)
-                    .oledBackground()
-                
-                DownloadsView()
-                    .tag(2)
-                    .oledBackground()
-                
-                ModuleManagerView()
-                    .tag(3)
-                    .oledBackground()
+            // Content Area
+            ZStack {
+                if selectedTab == 0 {
+                    SearchView()
+                        .transition(.opacity)
+                } else if selectedTab == 1 {
+                    LibraryView()
+                        .transition(.opacity)
+                } else if selectedTab == 2 {
+                    DownloadsView()
+                        .transition(.opacity)
+                } else if selectedTab == 3 {
+                    ModuleManagerView()
+                        .transition(.opacity)
+                }
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .ignoresSafeArea() // Allow content to flow under tab bar
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .ignoresSafeArea()
             
             
             // UI Overlay

@@ -448,3 +448,21 @@ public struct LibraryItem: Identifiable, Codable, Sendable {
         self.playCount = 0
     }
 }
+
+// MARK: - Playlist Model
+
+public struct Playlist: Identifiable, Codable, Sendable {
+    public let id: UUID
+    public var name: String
+    public var tracks: [Track]
+    public var createdAt: Date
+    public var description: String?
+    
+    public init(id: UUID = UUID(), name: String, tracks: [Track] = [], description: String? = nil) {
+        self.id = id
+        self.name = name
+        self.tracks = tracks
+        self.createdAt = Date()
+        self.description = description
+    }
+}

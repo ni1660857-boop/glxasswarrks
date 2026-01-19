@@ -3,7 +3,7 @@ import SwiftUI
 // MARK: - Downloads View
 
 struct DownloadsView: View {
-    @StateObject private var viewModel = DownloadsViewModel()
+    @ObservedObject var viewModel = DownloadsManager.shared
     @EnvironmentObject var player: AudioPlayer
     
     var body: some View {
@@ -161,28 +161,4 @@ struct DownloadRow: View {
     }
 }
 
-// MARK: - Downloads View Model
-@MainActor
-class DownloadsViewModel: ObservableObject {
-    @Published var downloads: [DownloadItem] = []
-    @Published var storageUsed: Int64 = 0
-    @Published var storageLimit: Int64 = 10 * 1024 * 1024 * 1024 // 10GB
-    
-    var storageProgress: Double {
-        Double(storageUsed) / Double(storageLimit)
-    }
-    
-    var formattedStorageUsed: String {
-        let formatter = ByteCountFormatter()
-        formatter.countStyle = .file
-        return formatter.string(fromByteCount: storageUsed) + " / " + formatter.string(fromByteCount: storageLimit)
-    }
-    
-    init() {
-        loadDownloads()
-    }
-    
-    func loadDownloads() {
-        // Load from storage
-    }
-}
+// (Removed local ViewModel class)
