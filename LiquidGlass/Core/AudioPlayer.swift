@@ -119,9 +119,10 @@ public final class AudioPlayer: NSObject, ObservableObject {
         
         // Time observer
         timeObserver = player?.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.5, preferredTimescale: 600), queue: .main) { [weak self] time in
-            Task { @MainActor in
-                self?.currentTime = time.seconds
-                self?.updateNowPlayingInfo()
+            guard let self = self else { return }
+            MainActor.assumeIsolated {
+                self.currentTime = time.seconds
+                self.updateNowPlayingInfo()
             }
         }
         

@@ -62,7 +62,6 @@ public final class ModuleRegistry: ObservableObject {
         isLoading = true
         error = nil
         
-        do {
             // Load built-in modules
             for (id, factory) in builtInModuleFactories {
                 let module = factory()
@@ -82,10 +81,6 @@ public final class ModuleRegistry: ObservableObject {
             
             // Load remote modules (if approved)
             await loadRemoteModules()
-            
-        } catch {
-            self.error = error
-        }
         
         isLoading = false
     }
@@ -165,22 +160,16 @@ public final class ModuleRegistry: ObservableObject {
         }
         
         // Add to enabled list if not already present
-        let moduleId = await module.id
-        if !enabledModules.contains(where: { moduleExists in
-            // Use the passed id parameter for comparison
-            return id == id // This is checked above via modules[id]
-        }) {
-            // Check if module with this id already exists in enabled list
-            var alreadyEnabled = false
-            for existingModule in enabledModules {
-                if await existingModule.id == id {
-                    alreadyEnabled = true
-                    break
-                }
+        var alreadyEnabled = false
+        for existingModule in enabledModules {
+            if await existingModule.id == id {
+                alreadyEnabled = true
+                break
             }
-            if !alreadyEnabled {
-                enabledModules.append(module)
-            }
+        }
+        
+        if !alreadyEnabled {
+            enabledModules.append(module)
         }
         
         userDefaults.set(true, forKey: "module.enabled.\(id)")
