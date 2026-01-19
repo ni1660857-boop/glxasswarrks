@@ -302,6 +302,9 @@ public enum ModuleError: LocalizedError, Sendable {
     case moduleDisabled
     case securityViolation(String)
     case invalidResponse(String)
+    case invalidFormat(String)
+    case notImplemented
+    case executionFailed(String)
     case unknownError(String)
     
     public var errorDescription: String? {
@@ -335,6 +338,12 @@ public enum ModuleError: LocalizedError, Sendable {
             return "Security violation: \(reason)"
         case .invalidResponse(let message):
             return "Invalid response: \(message)"
+        case .invalidFormat(let message):
+            return "Invalid format: \(message)"
+        case .notImplemented:
+            return "Not implemented"
+        case .executionFailed(let reason):
+            return "Execution failed: \(reason)"
         case .unknownError(let message):
             return "Unknown error: \(message)"
         }

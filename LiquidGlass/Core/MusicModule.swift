@@ -621,9 +621,9 @@ public actor JavaScriptModule: MusicModule, ObservableObject {
                     tracks.append(Track(
                         id: id,
                         title: title,
-                        artist: artist,
+                        artistName: artist,
                         album: album,
-                        artworkURL: URL(string: artUrl ?? ""),
+                        albumCover: URL(string: artUrl ?? ""),
                         duration: 0,
                         moduleId: self.id
                     ))

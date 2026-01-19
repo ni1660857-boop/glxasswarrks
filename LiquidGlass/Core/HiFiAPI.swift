@@ -62,9 +62,9 @@ public final class HiFiAPI: ObservableObject {
                          Track(
                              id: "spotify:\(sTrack.id)",
                              title: sTrack.name,
-                             artist: sTrack.artists.first?.name ?? "Unknown",
+                             artistName: sTrack.artists.first?.name ?? "Unknown",
                              album: sTrack.album.name,
-                             artworkURL: URL(string: sTrack.album.images.first?.url ?? ""),
+                             albumCover: URL(string: sTrack.album.images.first?.url ?? ""),
                              duration: 0,
                              moduleId: "spotify-metadata"
                          )

@@ -363,6 +363,14 @@ public enum GlassTheme {
     public static let white = Color.white
     public static let gray = Color.gray
     
+    public static var liquidGradient: LinearGradient {
+        LinearGradient(
+            colors: [cyan.opacity(0.3), pink.opacity(0.3)],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    }
+    
     public static func font(size: CGFloat, weight: Font.Weight = .regular) -> Font {
         .system(size: size, weight: weight, design: .rounded)
     }
