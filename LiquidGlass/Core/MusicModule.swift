@@ -339,8 +339,7 @@ public actor BaseModule {
         do {
             let (data, response) = try await urlSession.data(from: url)
             
-            let duration = Date().timeIntervalSince(startTime)
-            let statusCode = (response as? HTTPURLResponse)?.statusCode
+            _ = Date().timeIntervalSince(startTime) // Duration tracked for logging
             
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw ModuleError.networkError("Invalid response")
